@@ -14,8 +14,6 @@ function getEmailDomain(email) {
   return email.split('@').slice(-1)[0];
 }
 
-console.log(getEmailDomain("prettyandsimple@example.com"))
-
 module.exports = {
   getEmailDomain
 };
