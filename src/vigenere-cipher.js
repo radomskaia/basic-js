@@ -20,13 +20,58 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(isDirect = true) {
+    this.isDirect = isDirect;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  encrypt(str, key) {
+    if (!str || !key) {
+      throw new Error('Incorrect arguments!');
+    }
+    const length = str.length;
+    const newStr = str.toUpperCase();
+    let fullKey = key.repeat(Math.ceil(length / key.length)).slice(0, length).toUpperCase();
+    let encryptedStr = '';
+    for (let i = 0; i < length; i++) {
+      if (newStr[i] < 'A' || newStr[i] > 'Z') {
+        encryptedStr += newStr[i];
+        fullKey = fullKey.substring(0, i) + newStr[i] + fullKey.substring(i);
+        continue
+      }
+      let charCode = newStr.charCodeAt(i) + fullKey.charCodeAt(i) - 65;
+      if (charCode > 'Z'.charCodeAt(0)) {
+        charCode -= 26;
+      }
+      encryptedStr += String.fromCharCode(charCode);
+    }
+    return this.isDirect
+      ? encryptedStr.toUpperCase()
+      : encryptedStr.toUpperCase().split('').reverse().join('');
+  }
+  decrypt(str, key) {
+    if (!str || !key) {
+      throw new Error('Incorrect arguments!');
+    }
+
+    const length = str.length;
+    const newStr = str.toUpperCase();
+    let fullKey = key.repeat(Math.ceil(length / key.length)).slice(0, length).toUpperCase();
+    let encryptedStr = '';
+    for (let i = 0; i < length; i++) {
+      if (newStr[i] < 'A' || newStr[i] > 'Z') {
+        encryptedStr += newStr[i];
+        fullKey = fullKey.substring(0, i) + newStr[i] + fullKey.substring(i);
+        continue
+      }
+      let charCode = newStr.charCodeAt(i) - fullKey.charCodeAt(i) + 65;
+      if (charCode < 'A'.charCodeAt(0)) {
+        charCode += 26;
+      }
+      encryptedStr += String.fromCharCode(charCode);
+    }
+    return this.isDirect
+      ? encryptedStr.toUpperCase()
+      : encryptedStr.toUpperCase().split('').reverse().join('');
   }
 }
 
